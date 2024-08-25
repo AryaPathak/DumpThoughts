@@ -1,6 +1,7 @@
 const express = require('express');
 const userRoutes = require('./src/routes/userRoutes');
 const postRoutes = require('./src/routes/postRoutes');
+const authRoutes = require('./src/routes/authRoutes');
 
 const app = express();
 const PORT = 3000;
@@ -15,6 +16,8 @@ app.get("/", (req, res)=>{
     res.send("Hello");
 })
 
+
+app.use('/api/v1/auth', authRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/posts", postRoutes);
 
