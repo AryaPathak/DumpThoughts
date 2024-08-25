@@ -1,5 +1,6 @@
 const express = require('express');
-const userRoutes = require('./src/user/routes');
+const userRoutes = require('./src/routes/userRoutes');
+const postRoutes = require('./src/routes/postRoutes');
 
 const app = express();
 const PORT = 3000;
@@ -15,5 +16,6 @@ app.get("/", (req, res)=>{
 })
 
 app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/posts", postRoutes);
 
 app.listen(PORT, () => console.log(`app listening on port ${PORT}`));
