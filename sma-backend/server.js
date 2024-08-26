@@ -3,6 +3,7 @@ const userRoutes = require('./src/routes/userRoutes');
 const postRoutes = require('./src/routes/postRoutes');
 const authRoutes = require('./src/routes/authRoutes');
 
+
 const app = express();
 const PORT = 3000;
 

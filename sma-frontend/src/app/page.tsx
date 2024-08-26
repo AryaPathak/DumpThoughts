@@ -6,9 +6,11 @@ import LoginPage from './components/login';
 
 export default function Home() {
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-center mt-10">DumpThoughts</h1>
-      <LoginPage />
+    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center">
+      <h1 className="text-4xl font-bold text-center mt-10 mb-0">DumpThoughts</h1>
+      <div className="w-full max-w-lg">
+        <LoginPage />
+      </div>
     </div>
   );
 }
