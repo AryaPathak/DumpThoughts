@@ -1,8 +1,10 @@
 // routes/postRoutes.js
 const { Router } = require('express');
-const controller = require('../controllers/addPosts');
+const { addPost } = require('../controllers/addPostsController'); // Destructure the addPost function
+const { getPostsWithUsernames } = require('../controllers/postController'); // Destructure getPostsWithUsernames
 const router = Router();
 
-router.post("/", controller.addPost);
+router.post('/addposts', addPost);
+router.get('/allposts', getPostsWithUsernames);
 
 module.exports = router;

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import axios from 'axios';
+import PostsList from './posts';
 
 export default function Home() {
   const [userId, setUserId] = useState('');
@@ -12,7 +13,7 @@ export default function Home() {
     event.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:3000/api/v1/posts', {
+      const response = await axios.post('http://localhost:3000/api/v1/posts/addposts', {
         user_id: userId,
         post: postContent
       });
@@ -61,6 +62,10 @@ export default function Home() {
         </button>
       </form>
       {message && <p className="mt-4 text-green-600">{message}</p>}
+
+      {/* Displaying all posts */}
+      <h2 className="text-2xl font-bold mt-8 mb-4">All Posts</h2>
+      <PostsList />
     </div>
   );
 }
