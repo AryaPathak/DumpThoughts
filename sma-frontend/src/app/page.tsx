@@ -1,7 +1,7 @@
 // app/page.tsx (main page)
 
 import AllUsers from './components/userList';
-import AddPost from './components/inputBox';
+import AddPost from './components/homePage';
 import LoginPage from './components/login';
 
 export default function Home() {

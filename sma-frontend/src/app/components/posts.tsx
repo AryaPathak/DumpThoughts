@@ -1,5 +1,3 @@
-// components/PostsList.tsx
-
 "use client"; // Add this line at the top
 
 import React, { useEffect, useState } from 'react';
@@ -29,15 +27,30 @@ export default function PostsList() {
     fetchPosts();
   }, []);
 
+  // Helper function to calculate the time difference
+  const timeSince = (date: string) => {
+    const now = new Date();
+    const postDate = new Date(date);
+    const differenceInMilliseconds = now.getTime() - postDate.getTime();
+    const differenceInHours = Math.floor(differenceInMilliseconds / (1000 * 60 * 60));
+
+    if (differenceInHours < 24) {
+      return `${differenceInHours} hour${differenceInHours !== 1 ? 's' : ''} ago`;
+    } else {
+      const differenceInDays = Math.floor(differenceInHours / 24);
+      return `${differenceInDays} day${differenceInDays !== 1 ? 's' : ''} ago`;
+    }
+  };
+
   return (
     <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold text-center mb-6">All Posts</h2>
+     
       <div className="space-y-4">
         {posts.map((post) => (
           <div key={post.post_id} className="bg-gray-800 p-4 rounded-lg shadow-md">
             <div className="flex items-center space-x-4 mb-2">
               <span className="font-semibold text-lg">{post.username}</span>
-              <span className="text-gray-400 text-sm">{new Date(post.created_at).toLocaleString()}</span>
+              <span className="text-gray-400 text-sm">{timeSince(post.created_at)}</span>
             </div>
             <p className="text-gray-200">{post.post}</p>
           </div>

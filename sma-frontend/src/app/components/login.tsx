@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import axios from 'axios';
-import AddPost from './inputBox';
+import AddPost from './homePage';
 
 export default function LoginPage() {
   const [contactInfo, setContactInfo] = useState('');
@@ -13,9 +13,11 @@ export default function LoginPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [message, setMessage] = useState('');
   const [isLoginMode, setIsLoginMode] = useState(true);
+  const [loggedInUser, setLoggedInUser] = useState<number | null>(null);
 
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
+    
 
     try {
       if (isLoginMode) {
@@ -28,6 +30,8 @@ export default function LoginPage() {
         if (response.status === 200) {
           setIsAuthenticated(true);
           setMessage('Login successful!');
+          setLoggedInUser(response.data.user_id); // Save the user_id
+          //console.log("UserId is ",  response);
         }
       } else {
         // Signup functionality
@@ -51,7 +55,7 @@ export default function LoginPage() {
   };
 
   if (isAuthenticated) {
-    return <AddPost />;
+    return <AddPost loggedInUser={loggedInUser} />;
   }
 
   return (
