@@ -17,9 +17,10 @@ interface User {
 
 interface ProfilePageProps {
   user: User | null;
+  refreshPosts: boolean;
 }
 
-const ProfilePage: React.FC<ProfilePageProps> = ({ user }) => {
+const ProfilePage: React.FC<ProfilePageProps> = ({ user, refreshPosts }) => {
   // Function to count IDs in a comma-separated string
   const countIds = (ids: string | null) => {
     if (!ids) return 0;
@@ -41,7 +42,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user }) => {
       ) : (
         <p className="text-white">Loading user data...</p>
       )}
-      {user && <PostsList userId={user.user_id} />}
+      {user && <PostsList userId={user.user_id} refreshPosts={refreshPosts}/>}
     </div>
   );
 };

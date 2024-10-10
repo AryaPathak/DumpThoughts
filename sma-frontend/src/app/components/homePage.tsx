@@ -26,6 +26,7 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
   const [message, setMessage] = useState('');
   const [user, setUser] = useState<User | null>(null);
   const [showProfile, setShowProfile] = useState(false);
+  const [refreshPosts, setRefreshPosts] = useState(false);
 
   useEffect(() => {
     if (loggedInUser) {
@@ -54,6 +55,7 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
 
       setMessage(`Post created successfully: ${response.data.post.post}`);
       setPostContent('');
+      setRefreshPosts(!refreshPosts); 
     } catch (error) {
       setMessage('Error creating post');
       console.error("There was an error creating the post!", error);
@@ -67,7 +69,7 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
   return (
     <div className="container mx-auto p-4">
       {showProfile ? (
-        <ProfilePage user={user} />
+        <ProfilePage user={user} refreshPosts={refreshPosts}/>
       ) : (
         <>
           {user && (
@@ -103,7 +105,7 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
           
           {message && <p className="mt-4 text-green-600">{message}</p>}
           <h2 className="text-2xl font-bold mt-8 mb-4">All Posts</h2>
-          <PostsList userId={0} />
+          <PostsList userId={0} refreshPosts={refreshPosts} />
         </>
       )}
     </div>

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import AddPost from './homePage';
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; 
 
 export default function LoginPage() {
   const [contactInfo, setContactInfo] = useState('');
@@ -14,6 +15,7 @@ export default function LoginPage() {
   const [message, setMessage] = useState('');
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [loggedInUser, setLoggedInUser] = useState<number | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
@@ -52,6 +54,11 @@ export default function LoginPage() {
       setMessage(isLoginMode ? 'Login failed: Invalid credentials' : 'Signup failed: Please try again');
       setIsAuthenticated(false);
     }
+  };
+
+  // Toggle password visibility
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
   };
 
   if (isAuthenticated) {
@@ -110,16 +117,24 @@ export default function LoginPage() {
               required
             />
           </div>
-          <div>
+          <div className="relative">
             <label htmlFor="password" className="block text-sm font-medium text-gray-300">Password</label>
             <input
-              type="password"
+              type={showPassword ? 'text' : 'password'} // Toggle between text and password
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="mt-2 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm text-white p-3"
               required
             />
+            <button
+              type="button"
+              className="absolute inset-y-2
+               top-8 right-3 flex items-center text-gray-500"
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? <FaEyeSlash size={24} /> : <FaEye size={24} />} {/* Conditionally render the eye icon */}
+            </button>
           </div>
           <button
             type="submit"

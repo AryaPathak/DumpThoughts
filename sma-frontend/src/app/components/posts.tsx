@@ -1,5 +1,3 @@
-// components/posts.tsx
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -41,33 +39,34 @@ interface Post {
 
 interface PostsListProps {
   userId: number; // Add userId prop
+  refreshPosts: boolean; // Add refreshPosts prop
 }
 
-const PostsList: React.FC<PostsListProps> = ({ userId }) => {
+const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts }) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        console.log('Fetching posts for userId:', userId); // Log userId
-        const response = await axios.get('http://localhost:3000/api/v1/posts/allposts');
-        const allPosts = response.data;
-        setPosts(allPosts);
+  const fetchPosts = async () => {
+    try {
+      console.log('Fetching posts for userId:', userId); // Log userId
+      const response = await axios.get('http://localhost:3000/api/v1/posts/allposts');
+      const allPosts = response.data;
+      setPosts(allPosts);
 
-        // Apply filter based on userId
-        if (userId === 0) {
-          setFilteredPosts(allPosts); // Show all posts if userId is 0
-        } else {
-          setFilteredPosts(allPosts.filter((post: Post) => post.user_id === userId));
-        }
-      } catch (error) {
-        console.error('Error fetching posts:', error);
+      // Apply filter based on userId
+      if (userId === 0) {
+        setFilteredPosts(allPosts); // Show all posts if userId is 0
+      } else {
+        setFilteredPosts(allPosts.filter((post: Post) => post.user_id === userId));
       }
-    };
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchPosts();
-  }, [userId]);
+  }, [userId, refreshPosts]); // Refetch posts when userId or refreshPosts changes
 
   return (
     <div className="container mx-auto p-4">
