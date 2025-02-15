@@ -69,7 +69,8 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
   return (
     <div className="container mx-auto p-4">
       {showProfile ? (
-        <ProfilePage user={user} refreshPosts={refreshPosts}/>
+        <ProfilePage user={user} refreshPosts={refreshPosts} onClose={() => setShowProfile(false)} />
+
       ) : (
         <>
           {user && (

@@ -1,7 +1,7 @@
 // components/ProfilePage.tsx
 
 import React from 'react';
-import PostsList from './posts'
+import PostsList from './posts';
 
 interface User {
   user_id: number;
@@ -18,17 +18,23 @@ interface User {
 interface ProfilePageProps {
   user: User | null;
   refreshPosts: boolean;
+  onClose: () => void;
 }
 
-const ProfilePage: React.FC<ProfilePageProps> = ({ user, refreshPosts }) => {
-  // Function to count IDs in a comma-separated string
+const ProfilePage: React.FC<ProfilePageProps> = ({ user, refreshPosts, onClose }) => {
   const countIds = (ids: string | null) => {
     if (!ids) return 0;
     return ids.split(',').length;
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 relative">
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full hover:bg-red-700"
+      >
+        ✕
+      </button>
       {user ? (
         <div className="bg-gray-800 p-4 rounded-lg shadow-md">
           <h1 className="text-2xl font-bold text-white mb-2">{user.name}</h1>
@@ -37,12 +43,11 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, refreshPosts }) => {
           <p className="text-gray-400">Joined: {new Date(user.created_at).toLocaleDateString()}</p>
           <p className="text-gray-400">Followers: {countIds(user.follower_ids)}</p>
           <p className="text-gray-400">Following: {countIds(user.following_ids)}</p>
-          {/* Add more user details as needed */}
         </div>
       ) : (
         <p className="text-white">Loading user data...</p>
       )}
-      {user && <PostsList userId={user.user_id} refreshPosts={refreshPosts}/>}
+      {user && <PostsList userId={user.user_id} refreshPosts={refreshPosts} />}
     </div>
   );
 };
