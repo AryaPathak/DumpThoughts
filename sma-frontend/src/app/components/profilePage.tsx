@@ -40,7 +40,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, refreshPosts, onClose }
           <h1 className="text-2xl font-bold text-white mb-2">{user.name}</h1>
           <p className="text-gray-400">Username: {user.username}</p>
           <p className="text-gray-400">Bio: {user.bio}</p>
-          <p className="text-gray-400">Joined: {new Date(user.created_at).toLocaleDateString()}</p>
+          <p className="text-gray-400">Joined On: {new Date(user.created_at).toLocaleDateString()}</p>
           <p className="text-gray-400">Followers: {countIds(user.follower_ids)}</p>
           <p className="text-gray-400">Following: {countIds(user.following_ids)}</p>
         </div>
