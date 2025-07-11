@@ -81,13 +81,23 @@ const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts }) => {
             </div>
             <p className="text-gray-200 mb-2">{post.post}</p>
             {post.media_url && (
-              <img
-                src={post.media_url}
-                alt="Post media"
-                className="border border-white max-w-full h-auto rounded-md mx-auto mt-2"
-              />
-
+              post.media_url.match(/\.(mp4|webm|ogg)$/i) ? (
+                <video
+                  controls
+                  className="border border-white max-w-full h-auto rounded-md mx-auto mt-2"
+                >
+                  <source src={post.media_url} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              ) : (
+                <img
+                  src={post.media_url}
+                  alt="Post media"
+                  className="border border-white max-w-full h-auto rounded-md mx-auto mt-2"
+                />
+              )
             )}
+
           </div>
         ))}
 
