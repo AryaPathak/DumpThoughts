@@ -35,6 +35,7 @@ interface Post {
   username: string;
   post: string;
   created_at: string;
+  media_url?: string;
 }
 
 interface PostsListProps {
@@ -78,9 +79,18 @@ const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts }) => {
               <span className="font-semibold text-lg">{post.username}</span>
               <span className="text-gray-400 text-sm">{timeAgo(new Date(post.created_at))}</span>
             </div>
-            <p className="text-gray-200">{post.post}</p>
+            <p className="text-gray-200 mb-2">{post.post}</p>
+            {post.media_url && (
+              <img
+                src={post.media_url}
+                alt="Post media"
+                className="border border-white max-w-full h-auto rounded-md mx-auto mt-2"
+              />
+
+            )}
           </div>
         ))}
+
       </div>
     </div>
   );

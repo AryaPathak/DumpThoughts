@@ -1,6 +1,6 @@
 // queries/postQueries.js
 const getPostsWithUsernamesQuery = `
-  SELECT p.post_id, p.post, p.created_at, u.username, p.user_id
+  SELECT p.post_id, p.post, p.created_at, u.username, p.user_id, p.media_url
   FROM posts p 
   INNER JOIN users u ON p.user_id = u.user_id
   ORDER BY p.created_at DESC;
