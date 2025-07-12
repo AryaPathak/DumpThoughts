@@ -53,9 +53,11 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
         post: postContent,
       });
 
-      setMessage(`Post created successfully: ${response.data.post.post}`);
+      setMessage(`Post created successfully!`);
       setPostContent('');
       setRefreshPosts(!refreshPosts); 
+
+      setTimeout(() => setMessage(''), 7000);
     } catch (error) {
       setMessage('Error creating post');
       console.error("There was an error creating the post!", error);
@@ -104,7 +106,12 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
             </button>
           </form>
           
-          {message && <p className="mt-4 text-green-600">{message}</p>}
+          {message && (
+            <div className="fixed top-5 right-5 z-50 bg-green-600 text-white px-4 py-3 rounded-md shadow-lg transition-all duration-300">
+              {message}
+            </div>
+          )}
+
           <h2 className="text-2xl font-bold mt-8 mb-4">All Posts</h2>
           <PostsList userId={0} refreshPosts={refreshPosts} />
         </>
