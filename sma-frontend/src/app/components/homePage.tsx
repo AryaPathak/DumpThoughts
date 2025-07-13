@@ -1,5 +1,3 @@
-// components/HomePage.tsx
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PostsList from './posts';
@@ -27,6 +25,7 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
   const [user, setUser] = useState<User | null>(null);
   const [showProfile, setShowProfile] = useState(false);
   const [refreshPosts, setRefreshPosts] = useState(false);
+  const [isAnonymous, setIsAnonymous] = useState(false); // <-- NEW STATE
 
   useEffect(() => {
     if (loggedInUser) {
@@ -44,23 +43,26 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
     }
   }, [loggedInUser]);
 
-  const handleSubmit = async (event: { preventDefault: () => void; }) => {
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
 
     try {
       const response = await axios.post('http://localhost:3000/api/v1/posts/addposts', {
         user_id: loggedInUser,
         post: postContent,
+        is_anonymous: isAnonymous, 
       });
 
       setMessage(`Post created successfully!`);
       setPostContent('');
-      setRefreshPosts(!refreshPosts); 
+      setIsAnonymous(false); // Reset
+      setRefreshPosts(!refreshPosts);
 
-      setTimeout(() => setMessage(''), 7000);
+      setTimeout(() => setMessage(''), 3000);
     } catch (error) {
       setMessage('Error creating post');
       console.error("There was an error creating the post!", error);
+      setTimeout(() => setMessage(''), 3000);
     }
   };
 
@@ -72,7 +74,6 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
     <div className="container mx-auto p-4">
       {showProfile ? (
         <ProfilePage user={user} refreshPosts={refreshPosts} onClose={() => setShowProfile(false)} />
-
       ) : (
         <>
           {user && (
@@ -83,6 +84,7 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
               Hello, {user.name.split(' ')[0]}!
             </button>
           )}
+
           <h1 className="text-2xl font-bold mb-4">Create a New Post</h1>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -97,6 +99,18 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
                 required
               />
             </div>
+
+            {/* Toggle switch for anonymous posting */}
+            <label className="flex items-center space-x-2 text-sm text-white">
+              <input
+                type="checkbox"
+                checked={isAnonymous}
+                onChange={() => setIsAnonymous(!isAnonymous)}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <span>Post Anonymously</span>
+            </label>
+
             <button
               type="submit"
               className="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md shadow-sm text-white font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -105,7 +119,7 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
               Post
             </button>
           </form>
-          
+
           {message && (
             <div className="fixed top-5 right-5 z-50 bg-green-600 text-white px-4 py-3 rounded-md shadow-lg transition-all duration-300">
               {message}

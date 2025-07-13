@@ -36,6 +36,7 @@ interface Post {
   post: string;
   created_at: string;
   media_url?: string;
+  is_anonymous?: boolean; // Added is_anonymous field
 }
 
 interface PostsListProps {
@@ -49,7 +50,7 @@ const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts }) => {
 
   const fetchPosts = async () => {
     try {
-      console.log('Fetching posts for userId:', userId); // Log userId
+      //console.log('Fetching posts for userId:', userId); // Log userId
       const response = await axios.get('http://localhost:3000/api/v1/posts/allposts');
       const allPosts = response.data;
       setPosts(allPosts);
@@ -76,8 +77,14 @@ const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts }) => {
         {filteredPosts.map((post) => (
           <div key={post.post_id} className="bg-gray-800 p-4 rounded-lg shadow-md">
             <div className="flex items-center space-x-4 mb-2">
-              <span className="font-semibold text-lg">{post.username}</span>
-              <span className="text-gray-400 text-sm">{timeAgo(new Date(post.created_at))}</span>
+
+              <div className="flex items-center space-x-4 mb-2">
+                <span className="font-semibold text-lg">
+                  {post.is_anonymous ? 'Anonymous' : post.username}
+                </span>
+                <span className="text-gray-400 text-sm">{timeAgo(new Date(post.created_at))}</span>
+              </div>
+
             </div>
             <p className="text-gray-200 mb-2">{post.post}</p>
             {post.media_url && (
