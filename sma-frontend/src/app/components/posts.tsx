@@ -37,6 +37,8 @@ interface Post {
   created_at: string;
   media_url?: string;
   is_anonymous?: boolean; // Added is_anonymous field
+  profile_pic_url?: string; // Added profile_pic_url field
+
 }
 
 interface PostsListProps {
@@ -77,16 +79,32 @@ const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts }) => {
         {filteredPosts.map((post) => (
           <div key={post.post_id} className="bg-gray-800 p-4 rounded-lg shadow-md">
             <div className="flex items-center space-x-4 mb-2">
+              {/* Profile Picture */}
+              <img
+              src={
+                post.is_anonymous
+                  ? "https://robohash.org/anonymous"
+                  : post.profile_pic_url || "https://avatar.iran.liara.run/public"
+              }
+              alt="Profile"
+              className="w-10 h-10 rounded-full object-cover border border-white"
+            />
 
-              <div className="flex items-center space-x-4 mb-2">
+              {/* Username and Time */}
+              <div>
                 <span className="font-semibold text-lg">
                   {post.is_anonymous ? 'Anonymous' : post.username}
                 </span>
-                <span className="text-gray-400 text-sm">{timeAgo(new Date(post.created_at))}</span>
+                <div className="text-gray-400 text-sm">
+                  {timeAgo(new Date(post.created_at))}
+                </div>
               </div>
-
             </div>
+
+            {/* Post Text */}
             <p className="text-gray-200 mb-2">{post.post}</p>
+
+            {/* Media (Image or Video) */}
             {post.media_url && (
               post.media_url.match(/\.(mp4|webm|ogg)$/i) ? (
                 <video
@@ -104,8 +122,8 @@ const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts }) => {
                 />
               )
             )}
-
           </div>
+
         ))}
 
       </div>
