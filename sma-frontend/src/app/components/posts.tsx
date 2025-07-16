@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-// Utility function to format time ago
 const timeAgo = (date: Date) => {
   const now = new Date();
   const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
@@ -31,66 +30,84 @@ const timeAgo = (date: Date) => {
 
 interface Post {
   post_id: number;
-  user_id: number; // Added user_id field
+  user_id: number;
   username: string;
   post: string;
   created_at: string;
   media_url?: string;
-  is_anonymous?: boolean; // Added is_anonymous field
-  profile_pic_url?: string; // Added profile_pic_url field
-
+  is_anonymous?: boolean;
+  profile_pic_url?: string;
 }
 
 interface PostsListProps {
-  userId: number; // Add userId prop
-  refreshPosts: boolean; // Add refreshPosts prop
+  userId: number;
+  refreshPosts: boolean;
 }
 
 const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts }) => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
+  const [visiblePosts, setVisiblePosts] = useState<Post[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(10);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchPosts = async () => {
     try {
-      //console.log('Fetching posts for userId:', userId); // Log userId
+      setIsLoading(true);
       const response = await axios.get('http://localhost:3000/api/v1/posts/allposts');
       const allPosts = response.data;
-      setPosts(allPosts);
 
-      // Apply filter based on userId
-      if (userId === 0) {
-        setFilteredPosts(allPosts); // Show all posts if userId is 0
-      } else {
-        setFilteredPosts(allPosts.filter((post: Post) => post.user_id === userId));
-      }
+      const filtered = userId === 0
+        ? allPosts
+        : allPosts.filter((post: Post) => post.user_id === userId);
+
+      setPosts(filtered);
+      setVisiblePosts(filtered.slice(0, currentPage * postsPerPage));
     } catch (error) {
       console.error('Error fetching posts:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
+    setCurrentPage(1);
+  }, [userId]);
+
+  useEffect(() => {
     fetchPosts();
-  }, [userId, refreshPosts]); // Refetch posts when userId or refreshPosts changes
+  }, [userId, refreshPosts, currentPage]);
+
+  const handleLoadMore = () => {
+    const nextPage = currentPage + 1;
+    const nextPosts = posts.slice(0, nextPage * postsPerPage);
+    setVisiblePosts(nextPosts);
+    setCurrentPage(nextPage);
+  };
 
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold text-center mb-6">All Posts</h2>
+
+      {isLoading && (
+        <div className="flex justify-center my-6">
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+        </div>
+      )}
+
       <div className="space-y-4">
-        {filteredPosts.map((post) => (
+        {visiblePosts.map((post) => (
           <div key={post.post_id} className="bg-gray-800 p-4 rounded-lg shadow-md">
             <div className="flex items-center space-x-4 mb-2">
-              {/* Profile Picture */}
               <img
-              src={
-                post.is_anonymous
-                  ? "https://robohash.org/anonymous"
-                  : post.profile_pic_url || "https://avatar.iran.liara.run/public"
-              }
-              alt="Profile"
-              className="w-10 h-10 rounded-full object-cover border border-white"
-            />
-
-              {/* Username and Time */}
+                src={
+                  post.is_anonymous
+                    ? "https://robohash.org/anonymous"
+                    : post.profile_pic_url || "https://avatar.iran.liara.run/public"
+                }
+                alt="Profile"
+                className="w-10 h-10 rounded-full object-cover border border-white"
+              />
               <div>
                 <span className="font-semibold text-lg">
                   {post.is_anonymous ? 'Anonymous' : post.username}
@@ -101,10 +118,8 @@ const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts }) => {
               </div>
             </div>
 
-            {/* Post Text */}
             <p className="text-gray-200 mb-2">{post.post}</p>
 
-            {/* Media (Image or Video) */}
             {post.media_url && (
               post.media_url.match(/\.(mp4|webm|ogg)$/i) ? (
                 <video
@@ -123,10 +138,19 @@ const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts }) => {
               )
             )}
           </div>
-
         ))}
-
       </div>
+
+      {!isLoading && visiblePosts.length < posts.length && (
+        <div className="text-center mt-6">
+          <button
+            onClick={handleLoadMore}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Load More
+          </button>
+        </div>
+      )}
     </div>
   );
 };
