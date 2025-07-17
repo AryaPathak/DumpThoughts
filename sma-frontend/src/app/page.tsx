@@ -1,8 +1,8 @@
 // app/page.tsx (main page)
 
 import AllUsers from './components/userList';
-import AddPost from './components/homePage';
-import LoginPage from './components/login';
+import AddPost from './home/page';
+import LoginPage from './login/page';
 
 export default function Home() {
   return (

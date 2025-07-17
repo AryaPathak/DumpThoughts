@@ -1,5 +1,5 @@
 import React from 'react';
-import PostsList from './posts';
+import PostsList from '../posts/page';
 import { UserCircle, Users, UserPlus } from 'lucide-react'; // Optional icons
 
 interface User {

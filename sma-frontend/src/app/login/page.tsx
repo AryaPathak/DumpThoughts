@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import axios from 'axios';
-import AddPost from './homePage';
+import AddPost from '../home/page';
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; 
 
 export default function LoginPage() {

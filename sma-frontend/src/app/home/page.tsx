@@ -1,7 +1,9 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import PostsList from './posts';
-import ProfilePage from './profilePage';
+import PostsList from '../posts/page';
+import ProfilePage from '../profile/page';
 
 interface HomePageProps {
   loggedInUser: number | null;
