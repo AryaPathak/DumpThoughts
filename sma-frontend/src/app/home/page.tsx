@@ -19,6 +19,7 @@ interface User {
   bio: string;
   created_at: string;
   updated_at: string;
+  profile_pic_url?: string;
 }
 
 const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
@@ -87,40 +88,77 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
             </button>
           )}
 
-          <h1 className="text-2xl font-bold mb-4">Create a New Post</h1>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="post" className="block text-sm font-medium text-gray-700">Post Content</label>
-              <textarea
-                id="post"
-                value={postContent}
-                onChange={(e) => setPostContent(e.target.value)}
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-black"
-                rows={4}
-                maxLength={500}
-                required
+       
+          <form onSubmit={handleSubmit} className="bg-[#16181c] p-4 rounded-xl shadow-md text-white">
+            <div className="flex space-x-4">
+              <img
+                src={user?.profile_pic_url || "https://robohash.org/default-user"}
+                alt="Profile"
+                className="w-10 h-10 rounded-full object-cover"
               />
+             
+
+              <div className="flex-1">
+                {/* Post textarea */}
+                <textarea
+                  placeholder="What's on your mind?"
+                  value={postContent}
+                  onChange={(e) => setPostContent(e.target.value)}
+                  rows={3}
+                  maxLength={500}
+                  className="w-full bg-transparent text-white placeholder-gray-500 focus:outline-none resize-none"
+                />
+
+                {/* Icon row */}
+                <div className="flex items-center justify-between mt-3">
+                  <div className="flex space-x-4 text-blue-400">
+                    {/* Media Upload Button */}
+                    <button
+                      type="button"
+                      title="Add photo or video"
+                      onClick={() => document.getElementById('media-upload')?.click()}
+                      className="hover:text-blue-300"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7h2l.4 2M7 7h10l1 5H6.4M5 19h14a2 2 0 002-2v-5H3v5a2 2 0 002 2z" />
+                      </svg>
+                    </button>
+
+                    {/* Add more icons as needed */}
+                  </div>
+
+                  {/* Submit */}
+                  <button
+                    type="submit"
+                    disabled={!postContent.trim()}
+                    className={`px-4 py-1 rounded-full text-sm font-semibold transition ${
+                      postContent.trim()
+                        ? 'bg-blue-500 text-white hover:bg-blue-600'
+                        : 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                    }`}
+                  >
+                    Post
+                  </button>
+                </div>
+
+                {/* Hidden file input */}
+                <input
+                  type="file"
+                  id="media-upload"
+                  accept="image/*,video/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    // Handle media upload here (optional)
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      console.log('Media selected:', file.name);
+                    }
+                  }}
+                />
+              </div>
             </div>
-
-            {/* Toggle switch for anonymous posting */}
-            <label className="flex items-center space-x-2 text-sm text-white">
-              <input
-                type="checkbox"
-                checked={isAnonymous}
-                onChange={() => setIsAnonymous(!isAnonymous)}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <span>Post Anonymously</span>
-            </label>
-
-            <button
-              type="submit"
-              className="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md shadow-sm text-white font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              disabled={!loggedInUser}
-            >
-              Post
-            </button>
           </form>
+
 
           {message && (
             <div className="fixed top-5 right-5 z-50 bg-green-600 text-white px-4 py-3 rounded-md shadow-lg transition-all duration-300">
