@@ -104,8 +104,8 @@ const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts }) => {
               <img
                 src={
                   post.is_anonymous
-                    ? "https://robohash.org/anonymous"
-                    : post.profile_pic_url || "https://avatar.iran.liara.run/public"
+                    ? "https://cdn0.iconfinder.com/data/icons/unigrid-flat-human-vol-2/90/011_111_mask_anonymous_anonym_hacker_vendetta_face_mimicry-512.png"
+                    : post.profile_pic_url || "https://demo.patternlab.io/images/fpo_avatar.png"
                 }
                 alt="Profile"
                 className="w-10 h-10 rounded-full object-cover border border-white"

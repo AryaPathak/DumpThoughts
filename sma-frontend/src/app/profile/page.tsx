@@ -27,7 +27,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, refreshPosts, onClose }
     return ids.split(',').filter(Boolean).length;
   };
 
-  const defaultImage = "https://robohash.org/default-user";
+  const defaultImage = "https://demo.patternlab.io/images/fpo_avatar.png";
 
   return (
     <div className="container mx-auto p+18 relative text-white">

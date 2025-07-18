@@ -28,7 +28,11 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
   const [user, setUser] = useState<User | null>(null);
   const [showProfile, setShowProfile] = useState(false);
   const [refreshPosts, setRefreshPosts] = useState(false);
-  const [isAnonymous, setIsAnonymous] = useState(false); // <-- NEW STATE
+  const [isAnonymous, setIsAnonymous] = useState(false); 
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [mediaUrl, setMediaUrl] = useState<string | null>(null);
+  
+
 
   useEffect(() => {
     if (loggedInUser) {
@@ -46,28 +50,37 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
     }
   }, [loggedInUser]);
 
-  const handleSubmit = async (event: { preventDefault: () => void }) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    const formData = new FormData();
+    formData.append('user_id', String(loggedInUser));
+    formData.append('post', postContent);
+    formData.append('is_anonymous', String(isAnonymous));
+    if (selectedFile) {
+      formData.append('file', selectedFile);
+    }
+
     try {
-      const response = await axios.post('http://localhost:3000/api/v1/posts/addposts', {
-        user_id: loggedInUser,
-        post: postContent,
-        is_anonymous: isAnonymous, 
-      });
+      const response = await axios.post(
+        'http://localhost:3000/api/v1/posts/addposts',
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
 
-      setMessage(`Post created successfully!`);
+      setMessage('Post created successfully!');
       setPostContent('');
-      setIsAnonymous(false); // Reset
+      setSelectedFile(null);
+      setIsAnonymous(false);
       setRefreshPosts(!refreshPosts);
-
       setTimeout(() => setMessage(''), 3000);
     } catch (error) {
+      console.error('Error creating post:', error);
       setMessage('Error creating post');
-      console.error("There was an error creating the post!", error);
       setTimeout(() => setMessage(''), 3000);
     }
   };
+
 
   const handleProfileClick = () => {
     setShowProfile(true);
@@ -92,7 +105,7 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
           <form onSubmit={handleSubmit} className="bg-[#16181c] p-4 rounded-xl shadow-md text-white">
             <div className="flex space-x-4">
               <img
-                src={user?.profile_pic_url || "https://robohash.org/default-user"}
+                src={user?.profile_pic_url || "https://demo.patternlab.io/images/fpo_avatar.png"}
                 alt="Profile"
                 className="w-10 h-10 rounded-full object-cover"
               />
@@ -100,14 +113,54 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
 
               <div className="flex-1">
                 {/* Post textarea */}
-                <textarea
-                  placeholder="What's on your mind?"
-                  value={postContent}
-                  onChange={(e) => setPostContent(e.target.value)}
-                  rows={3}
-                  maxLength={500}
-                  className="w-full bg-transparent text-white placeholder-gray-500 focus:outline-none resize-none"
-                />
+               <textarea
+                placeholder="What's on your mind?"
+                value={postContent}
+                onChange={(e) => {
+                  setPostContent(e.target.value);
+                  e.target.style.height = "auto"; // Reset height
+                  e.target.style.height = `${e.target.scrollHeight}px`; // Set to scroll height
+                }}
+                rows={1}
+                maxLength={500}
+                className="w-full bg-transparent text-white placeholder-gray-500 focus:outline-none resize-none overflow-hidden"
+              />
+
+
+
+                 <div className="mt-3 flex items-center justify-start space-x-3 text-sm text-gray-300">
+
+
+                  {selectedFile && (
+                      <div className="mt-3 relative w-full max-w-md rounded-md overflow-hidden border border-gray-700">
+                        {/* Media Preview */}
+                        {selectedFile.type.startsWith('image') ? (
+                          <img
+                            src={URL.createObjectURL(selectedFile)}
+                            alt="Preview"
+                            className="w-full h-auto object-cover"
+                          />
+                        ) : selectedFile.type.startsWith('video') ? (
+                          <video controls className="w-full h-auto object-cover">
+                            <source src={URL.createObjectURL(selectedFile)} type={selectedFile.type} />
+                            Your browser does not support the video tag.
+                          </video>
+                        ) : null}
+
+                        {/* Remove Button */}
+                        <button
+                          type="button"
+                          onClick={() => setSelectedFile(null)}
+                          className="absolute top-1 right-1 bg-black bg-opacity-60 text-white text-xs px-2 py-0.5 rounded hover:bg-opacity-80"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    )}
+
+                  
+                </div>
+
 
                 {/* Icon row */}
                 <div className="flex items-center justify-between mt-3">
@@ -123,6 +176,27 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7h2l.4 2M7 7h10l1 5H6.4M5 19h14a2 2 0 002-2v-5H3v5a2 2 0 002 2z" />
                       </svg>
                     </button>
+
+                    <label htmlFor="anonymous" className="flex items-center cursor-pointer">
+                    {/* Toggle switch */}
+                    <div className="relative">
+                      <input
+                        id="anonymous"
+                        type="checkbox"
+                        checked={isAnonymous}
+                        onChange={() => setIsAnonymous(!isAnonymous)}
+                        className="sr-only"
+                      />
+                      <div className={`block w-11 h-6 rounded-full ${isAnonymous ? 'bg-blue-600' : 'bg-gray-600'}`} />
+                      <div
+                        className={`dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition ${
+                          isAnonymous ? 'translate-x-5' : ''
+                        }`}
+                      />
+                    </div>
+                    {/* Label */}
+                    <span className="ml-3 select-none">Post anonymously</span>
+                  </label>
 
                     {/* Add more icons as needed */}
                   </div>
@@ -148,13 +222,13 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
                   accept="image/*,video/*"
                   className="hidden"
                   onChange={(e) => {
-                    // Handle media upload here (optional)
                     const file = e.target.files?.[0];
                     if (file) {
-                      console.log('Media selected:', file.name);
+                      setSelectedFile(file);
                     }
                   }}
                 />
+
               </div>
             </div>
           </form>
