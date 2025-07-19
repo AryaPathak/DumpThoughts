@@ -151,8 +151,17 @@ const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts }) => {
           >
             Load More
           </button>
+          
+
         </div>
+
       )}
+
+      {!isLoading && visiblePosts.length === 0 && (
+            <div className="text-center text-gray-400 my-6">
+              No posts to display.
+            </div>
+          )}
     </div>
   );
 };
