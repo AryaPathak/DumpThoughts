@@ -47,8 +47,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, refreshPosts, onClose }
             className="w-36 h-36 rounded-full object-cover border-4 border-blue-500 shadow-lg"
           />
           <div className="flex-1">
-            <h1 className="text-3xl font-extrabold text-white mb-1">{user.name}</h1>
-            <p className="text-blue-400 text-lg">@{user.username}</p>
+            <h1 className="text-xl font-extrabold text-white mb-1">{user.name}</h1>
+            <p className="text-blue-400 text-sm">@{user.username}</p>
             <p className="text-gray-300 italic mt-2 mb-4">{user.bio || "No bio yet."}</p>
 
             <div className="flex gap-3 text-sm text-gray-400">
