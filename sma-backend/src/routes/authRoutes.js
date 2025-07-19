@@ -1,12 +1,12 @@
 // routes/authRoutes.js
 const { Router } = require('express');
 const { login } = require('../controllers/authController');
-const { createAccount } = require('../controllers/signupController');
+const { createAccount, upload } = require('../controllers/signupController');
 
 const router = Router();
 
 router.post('/login', login);
-router.post('/create-account', createAccount);
+router.post('/create-account', upload.single('profile_pic'), createAccount);
 
 
 

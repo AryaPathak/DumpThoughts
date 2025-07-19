@@ -1,19 +1,20 @@
 const pool = require('../../db');
 
-const insertIntoUsers = async (name, username, bio) => {
-    const client = await pool.connect();
-    try {
-        const userResult = await client.query(
-            `INSERT INTO users (name, username, bio)
-             VALUES ($1, $2, $3)
-             RETURNING user_id`,
-            [name, username, bio]
-        );
-        return userResult.rows[0].user_id;
-    } finally {
-        client.release();
-    }
+const insertIntoUsers = async (name, username, bio, profile_pic_url) => {
+  const client = await pool.connect();
+  try {
+    const userResult = await client.query(
+      `INSERT INTO users (name, username, bio, profile_pic_url)
+       VALUES ($1, $2, $3, $4)
+       RETURNING user_id`,
+      [name, username, bio, profile_pic_url]
+    );
+    return userResult.rows[0].user_id;
+  } finally {
+    client.release();
+  }
 };
+
 
 const insertIntoUserCredentials = async (contact_info, name, username, password, userId) => {
     const client = await pool.connect();

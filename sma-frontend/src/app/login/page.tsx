@@ -16,6 +16,8 @@ export default function LoginPage() {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [loggedInUser, setLoggedInUser] = useState<number | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [profilePic, setProfilePic] = useState<File | null>(null);
+  const [profilePreview, setProfilePreview] = useState<string | null>(null);
 
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
@@ -37,13 +39,25 @@ export default function LoginPage() {
         }
       } else {
         // Signup functionality
-        const response = await axios.post('http://localhost:3000/api/v1/auth/create-account', {
-          contact_info: contactInfo,
-          password: password,
-          name: name,
-          username: username,
-          bio: bio
-        });
+        // Signup functionality
+          const formData = new FormData();
+          formData.append('contact_info', contactInfo);
+          formData.append('password', password);
+          formData.append('name', name);
+          formData.append('username', username);
+          formData.append('bio', bio);
+          if (profilePic) formData.append('profile_pic', profilePic);
+
+          const response = await axios.post(
+            'http://localhost:3000/api/v1/auth/create-account',
+            formData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+              },
+            }
+          );
+
 
         if (response.status === 201) {
           setMessage('Signup successful! Please log in.');
@@ -104,6 +118,45 @@ export default function LoginPage() {
                   rows={3}
                 />
               </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300">Profile Picture</label>
+                <div className="mt-2 flex items-center space-x-3">
+                  {profilePreview ? (
+                    <img
+                      src={profilePreview}
+                      alt="Preview"
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-gray-600 flex items-center justify-center text-gray-400">
+                      ?
+                    </div>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => document.getElementById('profile-upload')?.click()}
+                    className="text-sm text-blue-500 hover:underline"
+                  >
+                    Upload Photo
+                  </button>
+                  <input
+                    type="file"
+                    id="profile-upload"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setProfilePic(file);
+                        setProfilePreview(URL.createObjectURL(file));
+                      }
+                    }}
+                    className="hidden"
+                  />
+                </div>
+              </div>
+
             </>
           )}
           <div>

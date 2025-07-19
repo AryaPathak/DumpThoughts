@@ -126,10 +126,7 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
                 className="w-full bg-transparent text-white placeholder-gray-500 focus:outline-none resize-none overflow-hidden"
               />
 
-
-
                  <div className="mt-3 flex items-center justify-start space-x-3 text-sm text-gray-300">
-
 
                   {selectedFile && (
                       <div className="mt-3 relative w-full max-w-md rounded-md overflow-hidden border border-gray-700">
