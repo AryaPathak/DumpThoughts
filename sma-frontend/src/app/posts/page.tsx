@@ -53,6 +53,8 @@ const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts }) => {
   const [postsPerPage] = useState(10);
   const [isLoading, setIsLoading] = useState(false);
 
+
+
   const fetchPosts = async () => {
     try {
       setIsLoading(true);
