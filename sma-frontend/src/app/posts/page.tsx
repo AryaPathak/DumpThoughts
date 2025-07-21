@@ -44,9 +44,12 @@ interface Post {
 interface PostsListProps {
   userId: number;
   refreshPosts: boolean;
+  onUserClick?: (userId: number) => void; 
 }
 
-const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts }) => {
+
+
+const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts, onUserClick  }) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [visiblePosts, setVisiblePosts] = useState<Post[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -103,7 +106,12 @@ const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts }) => {
       <div className="space-y-4">
         {visiblePosts.map((post) => (
           <div key={post.post_id} className="bg-gray-800 p-4 rounded-lg shadow-md">
-            <div className="flex items-center space-x-4 mb-2">
+            <div
+              onClick={() => post.is_anonymous ? null : onUserClick?.(post.user_id)}
+              className={`flex items-center space-x-4 mb-2 cursor-pointer ${
+                post.is_anonymous ? 'cursor-default' : 'hover:opacity-80'
+              }`}
+            >
               <img
                 src={
                   post.is_anonymous
@@ -122,6 +130,7 @@ const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts }) => {
                 </div>
               </div>
             </div>
+
 
             <p className="text-gray-200 mb-2">{post.post}</p>
 

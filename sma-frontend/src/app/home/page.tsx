@@ -22,6 +22,8 @@ interface User {
   profile_pic_url?: string;
 }
 
+
+
 const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
   const [postContent, setPostContent] = useState('');
   const [message, setMessage] = useState('');
@@ -31,7 +33,9 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
   const [isAnonymous, setIsAnonymous] = useState(false); 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [mediaUrl, setMediaUrl] = useState<string | null>(null);
-  
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+
+
 
 
   useEffect(() => {
@@ -86,16 +90,32 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
     setShowProfile(true);
   };
 
+  const handleUserClick = (id: number) => {
+  setSelectedUserId(id);
+};
+
+const closeProfile = () => {
+  setSelectedUserId(null);
+};
+
+  
+
   return (
     <div className="container mx-auto p-4">
       {showProfile ? (
-      <ProfilePage
-        user={user}
-        userId={user?.user_id}  // ✅ correct
-        refreshPosts={refreshPosts}
-        onClose={() => setShowProfile(false)}
-      />
-
+        <ProfilePage
+          user={user}
+          userId={user?.user_id}
+          refreshPosts={refreshPosts}
+          onClose={() => setShowProfile(false)}
+        />
+      ) : selectedUserId ? (
+        <ProfilePage
+          user={null}
+          userId={selectedUserId}
+          refreshPosts={refreshPosts}
+          onClose={closeProfile}
+        />
       ) : (
         <>
           {user && (
@@ -244,7 +264,7 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
           )}
 
           <h2 className="text-2xl font-bold mt-8 mb-4">All Posts</h2>
-          <PostsList userId={0} refreshPosts={refreshPosts} />
+          <PostsList userId={0} refreshPosts={refreshPosts} onUserClick={handleUserClick} />
         </>
       )}
     </div>
