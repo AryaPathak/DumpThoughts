@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Heart, MessageCircle } from 'lucide-react';
+
 
 const timeAgo = (date: Date) => {
   const now = new Date();
@@ -151,6 +153,18 @@ const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts, onUserClick
                 />
               )
             )}
+
+            <div className="flex items-center gap-6 mt-3 text-gray-400 text-sm">
+              <button className="flex items-center gap-1 hover:text-red-400 transition">
+                <Heart size={18} />
+                <span>Like</span>
+              </button>
+              <button className="flex items-center gap-1 hover:text-blue-400 transition">
+                <MessageCircle size={18} />
+                <span>Comment</span>
+              </button>
+            </div>
+
           </div>
         ))}
       </div>
