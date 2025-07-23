@@ -1,4 +1,6 @@
 import type { Config } from "tailwindcss";
+import { fontFamily } from "tailwindcss/defaultTheme";
+import defaultTheme from 'tailwindcss/defaultTheme';
 
 const config: Config = {
   content: [
@@ -8,6 +10,14 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        inter: ['var(--font-inter)', ...defaultTheme.fontFamily.sans],
+        roboto: ['var(--font-roboto)', ...defaultTheme.fontFamily.sans],
+        poppins: ['var(--font-poppins)', ...defaultTheme.fontFamily.sans],
+        lato: ['var(--font-lato)', ...defaultTheme.fontFamily.sans],
+        montserrat: ['var(--font-montserrat)', ...defaultTheme.fontFamily.sans],
+        openSans: ['var(--font-open-sans)', ...defaultTheme.fontFamily.sans],
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
