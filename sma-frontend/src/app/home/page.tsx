@@ -263,7 +263,7 @@ const closeProfile = () => {
             </div>
           )}
 
-          
+          <h2 className="text-2xl font-bold text-center mb-2 mt-5">All Posts</h2>
           <PostsList userId={0} refreshPosts={refreshPosts} onUserClick={handleUserClick} />
         </>
       )}

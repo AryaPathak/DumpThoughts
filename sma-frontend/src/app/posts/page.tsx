@@ -97,7 +97,7 @@ const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts, onUserClick
 
   return (
     <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold text-center mb-6">All Posts</h2>
+      
 
       {isLoading && (
         <div className="flex justify-center my-6">
