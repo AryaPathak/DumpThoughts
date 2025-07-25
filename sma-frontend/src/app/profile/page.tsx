@@ -101,7 +101,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userId, refreshPosts, onClose
       {userData && (
         <div className="mt-10">
           <h2 className="text-2xl font-bold text-white mb-4 border-b border-gray-600 pb-2">{userData.name.split(' ')[0]}'s Posts</h2>
-          <PostsList userId={userData.user_id} refreshPosts={refreshPosts} />
+          <PostsList userId={userData.user_id} refreshPosts={refreshPosts} hideAnonymous={true} />
         </div>
       )}
     </div>

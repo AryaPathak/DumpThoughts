@@ -47,11 +47,12 @@ interface PostsListProps {
   userId: number;
   refreshPosts: boolean;
   onUserClick?: (userId: number) => void; 
+  hideAnonymous?: boolean;
 }
 
 
 
-const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts, onUserClick  }) => {
+const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts, onUserClick, hideAnonymous }) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [visiblePosts, setVisiblePosts] = useState<Post[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -59,7 +60,7 @@ const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts, onUserClick
   const [isLoading, setIsLoading] = useState(false);
   
 
-
+  
 
   const fetchPosts = async () => {
     try {
@@ -67,9 +68,14 @@ const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts, onUserClick
       const response = await axios.get('http://localhost:3000/api/v1/posts/allposts');
       const allPosts = response.data;
 
-      const filtered = userId === 0
+      let filtered = userId === 0
         ? allPosts
         : allPosts.filter((post: Post) => post.user_id === userId);
+
+      if (hideAnonymous) {
+        filtered = filtered.filter((post: Post) => !post.is_anonymous);
+      }
+
 
       setPosts(filtered);
       setVisiblePosts(filtered.slice(0, currentPage * postsPerPage));
@@ -94,7 +100,7 @@ const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts, onUserClick
     setVisiblePosts(nextPosts);
     setCurrentPage(nextPage);
   };
-
+  
   return (
     <div className="container mx-auto p-4">
       
