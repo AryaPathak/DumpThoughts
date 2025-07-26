@@ -54,58 +54,69 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userId, refreshPosts, onClose
   }, [userId]);
 
   return (
-    <div className="container mx-auto p+18 relative text-white">
-      <button
-        onClick={onClose}
-        className="absolute top-4 right-4 w-6 h-6 flex items-center justify-center text-l bg-red-600 text-white rounded-full hover:bg-red-700 shadow-md"
-      >
-        ✕
-      </button>
+  <div className="relative text-white max-w-4xl mx-auto mt-8">
+    <button
+      onClick={onClose}
+      className="absolute top-4 right-4 w-6 h-6 flex items-center justify-center text-l bg-red-500 text-white rounded-full hover:bg-red-600 shadow-md z-20"
+    >
+      ✕
+    </button>
 
-      {isLoading ? (
-        <p className="text-white">Loading user data...</p>
-      ) : userData ? (
-        <div className="bg-gray-900 p-42 rounded-2xl shadow-2xl flex flex-col md:flex-row items-center md:items-start gap-8">
+    {isLoading ? (
+      <p className="text-white text-center">Loading user data...</p>
+    ) : userData ? (
+      <>
+        {/* Banner */}
+        <div className="relative h-40 bg-gray-700 rounded-t-xl">
+          <img
+            src="https://fastly.picsum.photos/id/10/2500/1667.jpg?hmac=J04WWC_ebchx3WwzbM-Z4_KC_LeLBWr5LZMaAkWkF68" 
+            alt="Banner"
+            className="object-cover w-full h-full rounded-t-xl"
+          />
+        </div>
+
+        {/* Avatar - overlaid */}
+        <div className="relative -mt-20 pl-6">
           <img
             src={userData.profile_pic_url || defaultImage}
             alt="Profile"
-            className="w-36 h-36 rounded-full object-cover border-4 border-blue-500 shadow-lg"
+            className="w-28 h-28 rounded-full border-4 border-black shadow-lg"
           />
-          <div className="flex-1">
-            <h1 className="text-xl font-extrabold text-white mb-1">{userData.name}</h1>
-            <p className="text-blue-400 text-sm">@{userData.username}</p>
-            <p className="text-gray-300 italic mt-2 mb-4">{userData.bio || "No bio yet."}</p>
+        </div>
 
-            <div className="flex gap-3 text-sm text-gray-400">
-              <div className="flex items-center gap-2">
-                <Users size={18} />
-                <span>{countIds(userData.follower_ids)} Followers</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <UserPlus size={18} />
-                <span>{countIds(userData.following_ids)} Following</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <UserCircle size={28} />
-                <span className="text-s text-gray-400">
-                  Joined: {new Date(userData.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}
-                </span>
-              </div>
+        {/* Profile Info */}
+        <div className="p-6 bg-gray-900 rounded-b-xl">
+          <h1 className="text-2xl font-bold">{userData.name}</h1>
+          <p className="text-blue-400">@{userData.username}</p>
+          <p className="text-gray-300 mt-2 italic">{userData.bio || "No bio yet."}</p>
+
+          <div className="flex flex-wrap gap-4 text-sm text-gray-400 mt-4">
+            <div className="flex items-center gap-2">
+              <Users size={16} />
+              <span>{countIds(userData.follower_ids)} Followers</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <UserPlus size={16} />
+              <span>{countIds(userData.following_ids)} Following</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <UserCircle size={16} />
+              <span>Joined {new Date(userData.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</span>
             </div>
           </div>
         </div>
-      ) : (
-        <p className="text-white">User not found</p>
-      )}
 
-      {userData && (
-        <div className="mt-10">
-          <h2 className="text-2xl font-bold text-white mb-4 border-b border-gray-600 pb-2">{userData.name.split(' ')[0]}'s Posts</h2>
+        {/* Posts */}
+        <div className="mt-10 px-6">
+          <h2 className="text-xl font-semibold border-b border-gray-600 pb-2 mb-4">{userData.name.split(' ')[0]}'s Posts</h2>
           <PostsList userId={userData.user_id} refreshPosts={refreshPosts} hideAnonymous={true} />
         </div>
-      )}
-    </div>
-  );
-};
+      </>
+    ) : (
+      <p className="text-white text-center">User not found</p>
+    )}
+  </div>
+);
+}
 
 export default ProfilePage;
