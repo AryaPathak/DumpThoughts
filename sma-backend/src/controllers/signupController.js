@@ -4,7 +4,7 @@ const fs = require('fs');
 const pool = require('../../db');
 const { insertIntoUsers, insertIntoUserCredentials } = require('../queries/registerUser');
 
-// Setup multer for uploads
+// Setup multer for handling profile and banner images
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const dir = './uploads/profile_pics';
@@ -13,22 +13,36 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
-    cb(null, `profile_${Date.now()}${ext}`);
+    cb(null, `${file.fieldname}_${Date.now()}${ext}`);
   }
 });
 
 const upload = multer({ storage });
 
+// Multer middleware to handle two files: profile and banner
+const uploadFields = upload.fields([
+  { name: 'profile_pic', maxCount: 1 },
+  { name: 'banner_pic', maxCount: 1 }
+]);
+
 const createAccount = async (req, res) => {
   const { contact_info, username, password, name, bio } = req.body;
-  const profilePicUrl = req.file ? `http://localhost:3000/uploads/profile_pics/${req.file.filename}` : null;
+
+  // Uploaded file URLs
+  const profilePicUrl = req.files['profile_pic']
+    ? `http://localhost:3000/uploads/profile_pics/${req.files['profile_pic'][0].filename}`
+    : null;
+
+  const bannerPicUrl = req.files['banner_pic']
+    ? `http://localhost:3000/uploads/profile_pics/${req.files['banner_pic'][0].filename}`
+    : null;
 
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
 
-    const userId = await insertIntoUsers(name, username, bio, profilePicUrl); // updated
-    await insertIntoUserCredentials(contact_info, name, username, password, userId);
+    const userId = await insertIntoUsers(client, name, username, bio, profilePicUrl, bannerPicUrl);
+    await insertIntoUserCredentials(client, contact_info, name, username, password, userId);
 
     await client.query('COMMIT');
     res.status(201).send('Account created successfully');

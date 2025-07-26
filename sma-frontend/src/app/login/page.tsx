@@ -18,6 +18,8 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [profilePic, setProfilePic] = useState<File | null>(null);
   const [profilePreview, setProfilePreview] = useState<string | null>(null);
+  const [bannerPic, setBannerPic] = useState<File | null>(null);
+  const [bannerPreview, setBannerPreview] = useState<string | null>(null);
 
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
@@ -47,6 +49,7 @@ export default function LoginPage() {
           formData.append('username', username);
           formData.append('bio', bio);
           if (profilePic) formData.append('profile_pic', profilePic);
+          if (bannerPic) formData.append('banner_pic', bannerPic);
 
           const response = await axios.post(
             'http://localhost:3000/api/v1/auth/create-account',
@@ -139,7 +142,7 @@ export default function LoginPage() {
                     onClick={() => document.getElementById('profile-upload')?.click()}
                     className="text-sm text-blue-500 hover:underline"
                   >
-                    Upload Photo
+                    Upload Profile Photo
                   </button>
                   <input
                     type="file"
@@ -150,6 +153,45 @@ export default function LoginPage() {
                       if (file) {
                         setProfilePic(file);
                         setProfilePreview(URL.createObjectURL(file));
+                      }
+                    }}
+                    className="hidden"
+                  />
+                </div>
+              </div>
+
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-300">Banner Picture</label>
+                <div className="mt-2 flex items-center space-x-3">
+                  {bannerPreview ? (
+                    <img
+                      src={bannerPreview}
+                      alt="Preview"
+                      className="w-32 h-12 object-cover"
+                    />
+                  ) : (
+                    <div className="w-32 h-12  bg-gray-600 flex items-center justify-center text-gray-400">
+                      ?
+                    </div>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => document.getElementById('banner-upload')?.click()}
+                    className="text-sm text-blue-500 hover:underline"
+                  >
+                    Add Banner Photo
+                  </button>
+                  <input
+                    type="file"
+                    id="banner-upload"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setBannerPic(file);
+                        setBannerPreview(URL.createObjectURL(file));
                       }
                     }}
                     className="hidden"
