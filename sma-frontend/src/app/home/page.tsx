@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PostsList from '../posts/page';
 import ProfilePage from '../profile/page';
+import LoginPage from '../login/page';
 
 interface HomePageProps {
   loggedInUser: number | null;
@@ -34,6 +35,8 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [mediaUrl, setMediaUrl] = useState<string | null>(null);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [showLogin, setShowLogin] = useState(false);
+
 
 
 
@@ -102,6 +105,18 @@ const closeProfile = () => {
 
   return (
     <div className="container mx-auto p-4">
+      {user && (
+        <button
+          onClick={() => {
+            setShowLogin(true);
+            //Code to log out user
+          }}
+          className="text-white text-sm absolute top-0 right-0 m-4 px-4 py-2 bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+        >
+          Log out
+        </button>
+      )}
+
       {showProfile ? (
         <ProfilePage
           user={user}
