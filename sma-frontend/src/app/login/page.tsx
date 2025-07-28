@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import AddPost from '../home/page';
+import { useRouter } from 'next/navigation';
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; 
 
 export default function LoginPage() {
@@ -20,6 +21,8 @@ export default function LoginPage() {
   const [profilePreview, setProfilePreview] = useState<string | null>(null);
   const [bannerPic, setBannerPic] = useState<File | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string | null>(null);
+  const router = useRouter();  // initialize the router
+
 
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
@@ -38,6 +41,7 @@ export default function LoginPage() {
           setMessage('Login successful!');
           setLoggedInUser(response.data.user_id); // Save the user_id
           //console.log("UserId is ",  response);
+          router.push('/home');
         }
       } else {
         // Signup functionality
