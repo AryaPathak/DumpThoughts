@@ -71,7 +71,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userId, refreshPosts, onClose
   };
 
   return (
-    <div className="relative text-white max-w-4xl mx-auto mt-8">
+    <div className="relative text-white max-w-xl mx-auto mt-8">
       <button
         onClick={onClose}
         className="absolute top-4 right-4 w-6 h-6 flex items-center justify-center text-l bg-red-500 text-white rounded-full hover:bg-red-600 shadow-md z-20"
@@ -86,7 +86,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userId, refreshPosts, onClose
           {/* Banner */}
           <div className="relative h-40 bg-gray-700 rounded-t-xl">
             <img
-              src="https://fastly.picsum.photos/id/10/2500/1667.jpg?hmac=J04WWC_ebchx3WwzbM-Z4_KC_LeLBWr5LZMaAkWkF68"
+              src="https://picsum.photos/id/237/200/300"
               alt="Banner"
               className="object-cover w-full h-full rounded-t-xl"
             />
