@@ -104,8 +104,8 @@ const closeProfile = () => {
   
 
   return (
-    <div className="container mx-auto p-4">
-       <h1 className="text-4xl font-bold text-center mt-10 mb-5">DumpThoughts</h1>
+    <div className="container mx-auto max-w-lg p-4">
+      <h1 className="text-4xl font-bold text-center mt-10 mb-5">DumpThoughts</h1>
       {user && (
         <button
           onClick={() => {

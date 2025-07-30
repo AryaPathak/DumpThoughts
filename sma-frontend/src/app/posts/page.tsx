@@ -103,8 +103,7 @@ const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts, onUserClick
   
   return (
     <div className="container mx-auto p-4">
-      
-
+    
       {isLoading && (
         <div className="flex justify-center my-6">
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
