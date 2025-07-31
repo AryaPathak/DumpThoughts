@@ -93,7 +93,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userId, refreshPosts, onClose
           </div>
 
           {/* Avatar - overlaid */}
-          <div className="relative -mt-20 pl-6 flex items-center justify-between pr-6">
+          <div className="relative pl-2 flex items-center justify-between pr-6">
             <img
               src={userData.profile_pic_url || defaultImage}
               alt="Profile"
