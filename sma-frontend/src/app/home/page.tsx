@@ -23,23 +23,16 @@ interface User {
   profile_pic_url?: string;
 }
 
-
-
 const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
   const [postContent, setPostContent] = useState('');
   const [message, setMessage] = useState('');
   const [user, setUser] = useState<User | null>(null);
   const [showProfile, setShowProfile] = useState(false);
   const [refreshPosts, setRefreshPosts] = useState(false);
-  const [isAnonymous, setIsAnonymous] = useState(false); 
+  const [isAnonymous, setIsAnonymous] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [mediaUrl, setMediaUrl] = useState<string | null>(null);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [showLogin, setShowLogin] = useState(false);
-
-
-
-
 
   useEffect(() => {
     if (loggedInUser) {
@@ -52,7 +45,6 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
           console.error('Error fetching user data:', error);
         }
       };
-
       fetchUserData();
     }
   }, [loggedInUser]);
@@ -64,9 +56,7 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
     formData.append('user_id', String(loggedInUser));
     formData.append('post', postContent);
     formData.append('is_anonymous', String(isAnonymous));
-    if (selectedFile) {
-      formData.append('file', selectedFile);
-    }
+    if (selectedFile) formData.append('file', selectedFile);
 
     try {
       const response = await axios.post(
@@ -88,31 +78,18 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
     }
   };
 
-
-  const handleProfileClick = () => {
-    setShowProfile(true);
-  };
-
-  const handleUserClick = (id: number) => {
-  setSelectedUserId(id);
-};
-
-const closeProfile = () => {
-  setSelectedUserId(null);
-};
-
-  
+  const handleProfileClick = () => setShowProfile(true);
+  const handleUserClick = (id: number) => setSelectedUserId(id);
+  const closeProfile = () => setSelectedUserId(null);
 
   return (
-    <div className="container mx-auto max-w-lg p-4">
-      <h1 className="text-4xl font-bold text-center mt-10 mb-5">DumpThoughts</h1>
+    <div className="container mx-auto max-w-2xl p-4">
+      <h1 className="text-4xl font-bold text-center mt-10 mb-6 text-white">DumpThoughts</h1>
+
       {user && (
         <button
-          onClick={() => {
-            setShowLogin(true);
-            //Code to log out user
-          }}
-          className="text-white text-sm absolute top-0 right-0 m-4 px-4 py-2 bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+          onClick={() => setShowLogin(true)}
+          className="text-white text-sm absolute top-0 right-0 m-4 px-4 py-2 bg-red-600 rounded-xl hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
         >
           Log out
         </button>
@@ -137,114 +114,92 @@ const closeProfile = () => {
           {user && (
             <button
               onClick={handleProfileClick}
-              className="text-white text-lg absolute top-0 left-0 m-4 px-4 py-2 bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="text-white text-lg absolute top-0 left-0 m-4 px-4 py-2 bg-blue-600 rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               Hello, {user.name.split(' ')[0]}!
             </button>
           )}
 
-       
-          <form onSubmit={handleSubmit} className="bg-[#16181c] p-4 rounded-xl shadow-md text-white">
+          <form onSubmit={handleSubmit} className="bg-[#16181c] p-5 rounded-2xl shadow-lg text-white mt-4">
             <div className="flex space-x-4">
               <img
                 src={user?.profile_pic_url || "https://demo.patternlab.io/images/fpo_avatar.png"}
                 alt="Profile"
                 className="w-10 h-10 rounded-full object-cover"
               />
-             
 
               <div className="flex-1">
-                {/* Post textarea */}
-               <textarea
-                placeholder="What's on your mind?"
-                value={postContent}
-                onChange={(e) => {
-                  setPostContent(e.target.value);
-                  e.target.style.height = "auto"; // Reset height
-                  e.target.style.height = `${e.target.scrollHeight}px`; // Set to scroll height
-                }}
-                rows={1}
-                maxLength={500}
-                className="w-full bg-transparent text-white placeholder-gray-500 focus:outline-none resize-none overflow-hidden"
-              />
+                <textarea
+                  placeholder="What's on your mind?"
+                  value={postContent}
+                  onChange={(e) => {
+                    setPostContent(e.target.value);
+                    e.target.style.height = 'auto';
+                    e.target.style.height = `${e.target.scrollHeight}px`;
+                  }}
+                  rows={1}
+                  maxLength={500}
+                  className="w-full bg-transparent text-white placeholder-gray-500 focus:outline-none resize-none overflow-hidden text-base"
+                />
 
-                 <div className="mt-3 flex items-center justify-start space-x-3 text-sm text-gray-300">
+                {selectedFile && (
+                  <div className="mt-3 relative w-full max-w-md rounded-xl overflow-hidden border border-gray-700">
+                    {selectedFile.type.startsWith('image') ? (
+                      <img
+                        src={URL.createObjectURL(selectedFile)}
+                        alt="Preview"
+                        className="w-full h-auto object-cover"
+                      />
+                    ) : selectedFile.type.startsWith('video') ? (
+                      <video controls className="w-full h-auto object-cover">
+                        <source src={URL.createObjectURL(selectedFile)} type={selectedFile.type} />
+                        Your browser does not support the video tag.
+                      </video>
+                    ) : null}
 
-                  {selectedFile && (
-                      <div className="mt-3 relative w-full max-w-md rounded-md overflow-hidden border border-gray-700">
-                        {/* Media Preview */}
-                        {selectedFile.type.startsWith('image') ? (
-                          <img
-                            src={URL.createObjectURL(selectedFile)}
-                            alt="Preview"
-                            className="w-full h-auto object-cover"
-                          />
-                        ) : selectedFile.type.startsWith('video') ? (
-                          <video controls className="w-full h-auto object-cover">
-                            <source src={URL.createObjectURL(selectedFile)} type={selectedFile.type} />
-                            Your browser does not support the video tag.
-                          </video>
-                        ) : null}
-
-                        {/* Remove Button */}
-                        <button
-                          type="button"
-                          onClick={() => setSelectedFile(null)}
-                          className="absolute top-1 right-1 bg-black bg-opacity-60 text-white text-xs px-2 py-0.5 rounded hover:bg-opacity-80"
-                        >
-                          ×
-                        </button>
-                      </div>
-                    )}
-
-                  
-                </div>
-
-
-                {/* Icon row */}
-                <div className="flex items-center justify-between mt-3">
-                  <div className="flex space-x-4 text-blue-400">
-                    {/* Media Upload Button */}
                     <button
                       type="button"
-                      title="Add photo or video"
+                      onClick={() => setSelectedFile(null)}
+                      className="absolute top-1 right-1 bg-black bg-opacity-60 text-white text-xs px-2 py-0.5 rounded-full hover:bg-opacity-80"
+                    >
+                      ×
+                    </button>
+                  </div>
+                )}
+
+                <div className="flex items-center justify-between mt-3">
+                  <div className="flex space-x-4 text-blue-400">
+                    <button
+                      type="button"
+                      title="Add media"
                       onClick={() => document.getElementById('media-upload')?.click()}
                       className="hover:text-blue-300"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7h2l.4 2M7 7h10l1 5H6.4M5 19h14a2 2 0 002-2v-5H3v5a2 2 0 002 2z" />
-                      </svg>
+                      📷
                     </button>
 
                     <label htmlFor="anonymous" className="flex items-center cursor-pointer">
-                    {/* Toggle switch */}
-                    <div className="relative">
-                      <input
-                        id="anonymous"
-                        type="checkbox"
-                        checked={isAnonymous}
-                        onChange={() => setIsAnonymous(!isAnonymous)}
-                        className="sr-only"
-                      />
-                      <div className={`block w-11 h-6 rounded-full ${isAnonymous ? 'bg-blue-600' : 'bg-gray-600'}`} />
-                      <div
-                        className={`dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition ${
-                          isAnonymous ? 'translate-x-5' : ''
-                        }`}
-                      />
-                    </div>
-                    {/* Label */}
-                    <span className="ml-3 select-none">Post anonymously</span>
-                  </label>
-
-                    {/* Add more icons as needed */}
+                      <div className="relative">
+                        <input
+                          id="anonymous"
+                          type="checkbox"
+                          checked={isAnonymous}
+                          onChange={() => setIsAnonymous(!isAnonymous)}
+                          className="sr-only"
+                        />
+                        <div className={`block w-11 h-6 rounded-full ${isAnonymous ? 'bg-blue-600' : 'bg-gray-600'}`} />
+                        <div
+                          className={`dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition ${isAnonymous ? 'translate-x-5' : ''}`}
+                        />
+                      </div>
+                      <span className="ml-3 select-none text-sm">Anonymous</span>
+                    </label>
                   </div>
 
-                  {/* Submit */}
                   <button
                     type="submit"
                     disabled={!postContent.trim()}
-                    className={`px-4 py-1 rounded-full text-sm font-semibold transition ${
+                    className={`px-4 py-2 rounded-full text-sm font-semibold transition ${
                       postContent.trim()
                         ? 'bg-blue-500 text-white hover:bg-blue-600'
                         : 'bg-gray-700 text-gray-400 cursor-not-allowed'
@@ -254,7 +209,6 @@ const closeProfile = () => {
                   </button>
                 </div>
 
-                {/* Hidden file input */}
                 <input
                   type="file"
                   id="media-upload"
@@ -267,19 +221,17 @@ const closeProfile = () => {
                     }
                   }}
                 />
-
               </div>
             </div>
           </form>
 
-
           {message && (
-            <div className="fixed top-5 right-5 z-50 bg-green-600 text-white px-4 py-3 rounded-md shadow-lg transition-all duration-300">
+            <div className="fixed top-5 right-5 z-50 bg-green-600 text-white px-4 py-3 rounded-xl shadow-lg transition-all duration-300">
               {message}
             </div>
           )}
 
-          <h2 className="text-2xl font-bold text-center mb-2 mt-5">All Posts</h2>
+          <h2 className="text-2xl font-bold text-center mb-3 mt-6 text-white">All Posts</h2>
           <PostsList userId={0} refreshPosts={refreshPosts} onUserClick={handleUserClick} />
         </>
       )}
