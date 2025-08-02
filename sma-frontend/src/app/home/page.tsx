@@ -40,6 +40,8 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
         try {
           const response = await axios.get(`http://localhost:3000/api/v1/users`);
           const userData = response.data.find((u: User) => u.user_id === loggedInUser);
+console.log("Logged in user ID:", loggedInUser);
+
           setUser(userData);
         } catch (error) {
           console.error('Error fetching user data:', error);
