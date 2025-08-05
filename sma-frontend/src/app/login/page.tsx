@@ -38,8 +38,10 @@ export default function LoginPage() {
 
         if (response.status === 200) {
           setIsAuthenticated(true);
+          const userId = response.data.user_id;
           setMessage('Login successful!');
           setLoggedInUser(response.data.user_id); // Save the user_id
+          localStorage.setItem('user_id', String(userId));
           //console.log("UserId is ",  response);
           router.push('/home');
         }

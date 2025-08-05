@@ -23,7 +23,8 @@ interface User {
   profile_pic_url?: string;
 }
 
-const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
+const HomePage: React.FC<HomePageProps> = ({  }) => {
+  const loggedInUser = localStorage.getItem('user_id');
   const [postContent, setPostContent] = useState('');
   const [message, setMessage] = useState('');
   const [user, setUser] = useState<User | null>(null);
@@ -39,8 +40,8 @@ const HomePage: React.FC<HomePageProps> = ({ loggedInUser }) => {
       const fetchUserData = async () => {
         try {
           const response = await axios.get(`http://localhost:3000/api/v1/users`);
-          const userData = response.data.find((u: User) => u.user_id === loggedInUser);
-console.log("Logged in user ID:", loggedInUser);
+          const userData = response.data.find((u: User) => u.user_id === Number(loggedInUser));
+          console.log("Logged in user ID:", loggedInUser);
 
           setUser(userData);
         } catch (error) {
@@ -53,12 +54,14 @@ console.log("Logged in user ID:", loggedInUser);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
     const formData = new FormData();
     formData.append('user_id', String(loggedInUser));
     formData.append('post', postContent);
+    
     formData.append('is_anonymous', String(isAnonymous));
     if (selectedFile) formData.append('file', selectedFile);
+   
+
 
     try {
       const response = await axios.post(
@@ -66,6 +69,7 @@ console.log("Logged in user ID:", loggedInUser);
         formData,
         { headers: { 'Content-Type': 'multipart/form-data' } }
       );
+      console.log('Post created:', response.data);
 
       setMessage('Post created successfully!');
       setPostContent('');
@@ -90,7 +94,10 @@ console.log("Logged in user ID:", loggedInUser);
 
       {user && (
         <button
-          onClick={() => setShowLogin(true)}
+          onClick={() => {
+            localStorage.removeItem('user_id');
+            window.location.href = '/login'; 
+          }}
           className="text-white text-sm absolute top-0 right-0 m-4 px-4 py-2 bg-red-600 rounded-xl hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
         >
           Log out
