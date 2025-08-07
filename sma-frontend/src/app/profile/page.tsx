@@ -83,23 +83,26 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userId, refreshPosts, onClose
         <p className="text-white text-center">Loading user data...</p>
       ) : userData ? (
         <>
-          {/* Banner */}
+         
           <div className="relative h-40 bg-gray-700 rounded-t-xl">
             <img
               src="https://picsum.photos/id/237/200/300"
               alt="Banner"
               className="object-cover w-full h-full rounded-t-xl"
             />
+
+            {/* Avatar overlaid on banner */}
+            <div className="absolute -bottom-14 left-6">
+              <img
+                src={userData.profile_pic_url || defaultImage}
+                alt="Profile"
+                className="w-28 h-28 rounded-full border-4 border-black shadow-lg"
+              />
+            </div>
           </div>
 
-          {/* Avatar - overlaid */}
-          <div className="relative pl-2 flex items-center justify-between pr-6">
-            <img
-              src={userData.profile_pic_url || defaultImage}
-              alt="Profile"
-              className="w-28 h-28 rounded-full border-4 border-black shadow-lg"
-            />
-            {/* Follow button (hidden if viewing own profile) */}
+          {/* Follow button and spacing below avatar */}
+          <div className="flex justify-end items-center pr-6 mt-16">
             {user?.user_id !== userData.user_id && (
               <button
                 onClick={handleFollowToggle}
@@ -111,6 +114,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userId, refreshPosts, onClose
               </button>
             )}
           </div>
+
 
           {/* Profile Info */}
           <div className="p-6 bg-gray-900 rounded-b-xl">
