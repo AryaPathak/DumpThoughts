@@ -1,8 +1,6 @@
 "use client"; 
-
 import React, { useState } from 'react';
 import axios from 'axios';
-import AddPost from '../home/page';
 import { useRouter } from 'next/navigation';
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; 
 
@@ -21,7 +19,7 @@ export default function LoginPage() {
   const [profilePreview, setProfilePreview] = useState<string | null>(null);
   const [bannerPic, setBannerPic] = useState<File | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string | null>(null);
-  const router = useRouter();  // initialize the router
+  const router = useRouter();  
 
 
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
@@ -42,12 +40,12 @@ export default function LoginPage() {
           setMessage('Login successful!');
           setLoggedInUser(response.data.user_id); // Save the user_id
           localStorage.setItem('user_id', String(userId));
-          //console.log("UserId is ",  response);
+          
           router.push('/home');
         }
       } else {
         // Signup functionality
-        // Signup functionality
+       
           const formData = new FormData();
           formData.append('contact_info', contactInfo);
           formData.append('password', password);
@@ -84,9 +82,7 @@ export default function LoginPage() {
     setShowPassword((prev) => !prev);
   };
 
-  if (isAuthenticated) {
-    return <AddPost loggedInUser={loggedInUser} />;
-  }
+  
 
   return (
     <div className="container mx-auto p-4 bg-gray-900 text-white min-h-screen flex justify-center items-center">
