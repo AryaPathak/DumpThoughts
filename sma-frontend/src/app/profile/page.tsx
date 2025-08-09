@@ -19,8 +19,8 @@ interface User {
 }
 
 interface ProfilePageProps {
-  user: User | null; // currently logged-in user
-  userId: number | undefined; // profile being viewed
+  user: User | null;
+  userId: number | undefined;
   refreshPosts: boolean;
   onClose: () => void;
 }
@@ -44,7 +44,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userId, refreshPosts, onClose
         const res = await axios.get(`http://localhost:3000/api/v1/users/${userId}`);
         setUserData(res.data);
 
-        // Set following state
         if (user && res.data.follower_ids) {
           const followers = res.data.follower_ids.split(',').map((id: string) => parseInt(id));
           setIsFollowing(followers.includes(user.user_id));
@@ -71,83 +70,116 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userId, refreshPosts, onClose
   };
 
   return (
-    <div className="relative text-white max-w-xl mx-auto mt-8">
+    <div className="relative text-white max-w-2xl mx-auto bg-black border-x border-gray-700 rounded-none overflow-hidden">
+      {/* Close Button */}
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 w-6 h-6 flex items-center justify-center text-l bg-red-500 text-white rounded-full hover:bg-red-600 shadow-md z-20"
+        className="absolute top-4 right-4 w-7 h-7 flex items-center justify-center text-lg bg-red-500 text-white rounded-full hover:bg-red-600 shadow-md z-20"
       >
         ✕
       </button>
 
       {isLoading ? (
-        <p className="text-white text-center">Loading user data...</p>
+        <p className="text-white text-center py-10">Loading user data...</p>
       ) : userData ? (
         <>
-         
-          <div className="relative h-40 bg-gray-700 rounded-t-xl">
+          {/* Banner */}
+          <div className="relative w-full h-48">
             <img
-              src="https://picsum.photos/id/237/200/300"
+              src="https://picsum.photos/id/237/1200/400"
               alt="Banner"
-              className="object-cover w-full h-full rounded-t-xl"
+              className="object-cover w-full h-full"
             />
 
-            {/* Avatar overlaid on banner */}
-            <div className="absolute -bottom-14 left-6">
+            {/* Avatar */}
+            <div className="absolute -bottom-12 left-6">
               <img
                 src={userData.profile_pic_url || defaultImage}
                 alt="Profile"
-                className="w-28 h-28 rounded-full border-4 border-black shadow-lg"
+                className="w-32 h-32 rounded-full border-4 border-black"
               />
             </div>
           </div>
-
-          {/* Follow button and spacing below avatar */}
-          <div className="flex justify-end items-center pr-6 mt-16">
-            {user?.user_id !== userData.user_id && (
-              <button
-                onClick={handleFollowToggle}
-                className={`px-4 py-2 rounded-full text-sm font-semibold shadow-md ${
-                  isFollowing ? 'bg-gray-600 hover:bg-gray-700' : 'bg-blue-600 hover:bg-blue-700'
-                }`}
-              >
-                {isFollowing ? 'Unfollow' : 'Follow'}
-              </button>
-            )}
-          </div>
-
+          
 
           {/* Profile Info */}
-          <div className="p-6 bg-gray-900 rounded-b-xl">
-            <h1 className="text-2xl font-bold">{userData.name}</h1>
-            <p className="text-blue-400">@{userData.username}</p>
-            <p className="text-gray-300 mt-2 italic">{userData.bio || "No bio yet."}</p>
+          <div className="pt-12 px-6 pb-6">
+            <div className="flex justify-between items-center">
+              <div>
+                <h1 className="text-2xl font-bold">{userData.name}</h1>
+                <p className="text-gray-400">@{userData.username}</p>
+              </div>
 
-            <div className="flex flex-wrap gap-4 text-sm text-gray-400 mt-4">
-              <div className="flex items-center gap-2">
+              {/* Follow button and actions */}
+              <div className="flex justify-end items-center gap-2 pr-6 mt-16">
+                {user?.user_id !== userData.user_id && (
+                  <>
+                    <button
+                      onClick={() => alert("Message feature coming soon!")}
+                      className="p-2 rounded-full bg-gray-800 hover:bg-gray-700 shadow-md"
+                      title="Message"
+                    >
+                      💬
+                    </button>
+                    <button
+                      onClick={() => alert("Share profile link copied!")}
+                      className="p-2 rounded-full bg-gray-800 hover:bg-gray-700 shadow-md"
+                      title="Share"
+                    >
+                      🔗
+                    </button>
+                    <button
+                      onClick={() => alert("More options coming soon!")}
+                      className="p-2 rounded-full bg-gray-800 hover:bg-gray-700 shadow-md"
+                      title="More"
+                    >
+                      ⋯
+                    </button>
+                    <button
+                      onClick={handleFollowToggle}
+                      className={`px-4 py-2 rounded-full text-sm font-semibold shadow-md ${
+                        isFollowing ? 'bg-gray-600 hover:bg-gray-700' : 'bg-blue-600 hover:bg-blue-700'
+                      }`}
+                    >
+                      {isFollowing ? 'Unfollow' : 'Follow'}
+                    </button>
+                  </>
+                )}
+              </div>
+
+            </div>
+
+            <p className="mt-3 text-gray-300">{userData.bio || "No bio yet."}</p>
+
+            {/* Stats */}
+            <div className="flex gap-6 text-sm text-gray-400 mt-4">
+              <div className="flex items-center gap-1">
                 <Users size={16} />
                 <span>{countIds(userData.follower_ids)} Followers</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 <UserPlus size={16} />
                 <span>{countIds(userData.following_ids)} Following</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 <UserCircle size={16} />
-                <span>Joined {new Date(userData.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</span>
+                <span>
+                  Joined {new Date(userData.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}
+                </span>
               </div>
             </div>
           </div>
 
           {/* Posts */}
-          <div className="mt-10 px-6">
-            <h2 className="text-xl font-semibold border-b border-gray-600 pb-2 mb-4">
+          <div className="px-6">
+            <h2 className="text-xl font-semibold border-b border-gray-700 pb-2 mb-4">
               {userData.name.split(' ')[0]}'s Posts
             </h2>
             <PostsList userId={userData.user_id} refreshPosts={refreshPosts} hideAnonymous={true} />
           </div>
         </>
       ) : (
-        <p className="text-white text-center">User not found</p>
+        <p className="text-white text-center py-10">User not found</p>
       )}
     </div>
   );
