@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PostsList from '../posts/page';
 import ProfilePage from '../profile/page';
-import LoginPage from '../login/page';
+import Loader from "../components/loader";
 
 interface HomePageProps {
   loggedInUser: number | null;
@@ -34,6 +34,7 @@ const HomePage: React.FC<HomePageProps> = ({  }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [showLogin, setShowLogin] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (loggedInUser) {
@@ -46,12 +47,16 @@ const HomePage: React.FC<HomePageProps> = ({  }) => {
           setUser(userData);
         } catch (error) {
           console.error('Error fetching user data:', error);
+        }finally {
+          setTimeout(() => setLoading(false), 800);
         }
       };
       fetchUserData();
     }
   }, [loggedInUser]);
 
+  if (loading) return <Loader />;
+  
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const formData = new FormData();
