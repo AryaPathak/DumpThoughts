@@ -71,13 +71,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userId, refreshPosts, onClose
 
   return (
     <div className="relative text-white max-w-2xl mx-auto bg-black border-x border-gray-700 rounded-none overflow-hidden">
-      {/* Close Button */}
-      <button
-        onClick={onClose}
-        className="absolute top-4 right-4 w-7 h-7 flex items-center justify-center text-lg bg-red-500 text-white rounded-full hover:bg-red-600 shadow-md z-20"
-      >
-        ✕
-      </button>
+     
+     
 
       {isLoading ? (
         <p className="text-white text-center py-10">Loading user data...</p>

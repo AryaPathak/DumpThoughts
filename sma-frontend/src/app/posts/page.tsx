@@ -46,9 +46,10 @@ interface Post {
 interface PostsListProps {
   userId: number;
   refreshPosts: boolean;
-  onUserClick?: (userId: number) => void; 
+  onUserClick?: (username: string) => void; 
   hideAnonymous?: boolean;
 }
+
 
 
 
@@ -114,7 +115,7 @@ const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts, onUserClick
         {visiblePosts.map((post) => (
           <div key={post.post_id} className="bg-gray-800 p-4 rounded-lg shadow-md">
             <div
-              onClick={() => post.is_anonymous ? null : onUserClick?.(post.user_id)}
+              onClick={() => post.is_anonymous ? null : onUserClick?.(post.username)}
               className={`flex items-center space-x-4 mb-2 cursor-pointer ${
                 post.is_anonymous ? 'cursor-default' : 'hover:opacity-80'
               }`}
