@@ -5,6 +5,7 @@ import axios from 'axios';
 import PostsList from '../posts/page';
 import { UserCircle, Users, UserPlus } from 'lucide-react';
 
+
 interface User {
   user_id: number;
   name: string;
@@ -29,6 +30,22 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userId, refreshPosts, onClose
   const [userData, setUserData] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyLink = () => {
+    if (userData?.username) {
+      const profileUrl = `${window.location.origin}/${userData.username}`;
+      navigator.clipboard.writeText(profileUrl)
+        .then(() => {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000); // hide after 2s
+        })
+        .catch((err) => {
+          console.error("Failed to copy: ", err);
+        });
+    }
+  };
+
 
   const defaultImage = "https://demo.patternlab.io/images/fpo_avatar.png";
 
@@ -117,12 +134,18 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userId, refreshPosts, onClose
                       💬
                     </button>
                     <button
-                      onClick={() => alert("Share profile link copied!")}
-                      className="p-2 rounded-full bg-gray-800 hover:bg-gray-700 shadow-md"
+                      onClick={handleCopyLink}
+                      className="p-2 rounded-full bg-gray-800 hover:bg-gray-700 shadow-md relative"
                       title="Share"
                     >
                       🔗
+                      {copied && (
+                        <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded-md shadow-lg">
+                          Link copied!
+                        </span>
+                      )}
                     </button>
+
                     <button
                       onClick={() => alert("More options coming soon!")}
                       className="p-2 rounded-full bg-gray-800 hover:bg-gray-700 shadow-md"
