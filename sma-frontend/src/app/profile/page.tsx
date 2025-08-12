@@ -54,26 +54,33 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userId, refreshPosts, onClose
     return ids.split(',').filter(Boolean).length;
   };
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        setIsLoading(true);
-        const res = await axios.get(`http://localhost:3000/api/v1/users/${userId}`);
-        setUserData(res.data);
+useEffect(() => {
+  const fetchUser = async () => {
+    try {
+      setIsLoading(true);
+      const res = await axios.get(`http://localhost:3000/api/v1/users/${userId}`);
+      const fetchedUser = res.data;
+      setUserData(fetchedUser);
+console.log("Fetched follower_ids:", fetchedUser.follower_ids);
+console.log("Fetched following_ids:", fetchedUser.following_ids);
 
-        if (user && res.data.follower_ids) {
-          const followers = res.data.follower_ids.split(',').map((id: string) => parseInt(id));
-          setIsFollowing(followers.includes(user.user_id));
-        }
-      } catch (error) {
-        console.error("Error fetching user:", error);
-      } finally {
-        setIsLoading(false);
+      // Check following status immediately
+      if (user && fetchedUser.follower_ids) {
+        const followers = fetchedUser.follower_ids.split(',').map((id: string) => parseInt(id));
+        setIsFollowing(followers.includes(user.user_id));
+        
       }
-    };
+    } catch (error) {
+      console.error("Error fetching user:", error);
+    } finally {
+      setIsLoading(false);
+    }
+    
+  };
 
-    fetchUser();
-  }, [userId, user]);
+  fetchUser();
+}, [userId, user]);
+
 
   const handleFollowToggle = async () => {
     try {

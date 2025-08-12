@@ -11,7 +11,7 @@ const getUserById = async (req, res) => {
   const { userId } = req.params;
   try {
         const result = await pool.query(
-    'SELECT user_id, username, name, bio, profile_pic_url, created_at FROM users WHERE user_id = $1',
+    'SELECT user_id, username, name, bio, profile_pic_url, created_at, following_ids, follower_ids FROM users WHERE user_id = $1',
     [userId]
     );
 
