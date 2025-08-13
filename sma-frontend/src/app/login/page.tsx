@@ -20,6 +20,8 @@ export default function LoginPage() {
   const [bannerPic, setBannerPic] = useState<File | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false); // NEW: Loader state
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
 
   const router = useRouter();
 
@@ -46,8 +48,10 @@ export default function LoginPage() {
           setLoggedInUser(userId);
           localStorage.setItem("user_id", String(userId));
 
+          setIsRedirecting(true); // show redirect loader
           router.push("/home");
         }
+
       } else {
         // Signup functionality
         const formData = new FormData();
@@ -90,6 +94,23 @@ export default function LoginPage() {
 
   return (
     <div className="container mx-auto p-4 bg-gray-900 text-white min-h-screen flex justify-center items-center">
+      {isRedirecting && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm z-50">
+          <div className="bg-gray-800 bg-opacity-80 p-8 rounded-2xl shadow-2xl flex flex-col items-center space-y-6">
+            {/* Gradient spinner */}
+            <div className="relative">
+              <div className="w-14 h-14 border-4 border-transparent border-t-blue-500 border-r-purple-500 rounded-full animate-spin"></div>
+              <div className="absolute inset-0 w-14 h-14 border-4 border-transparent border-b-pink-500 border-l-green-400 rounded-full animate-[spin_1.5s_linear_reverse_infinite]"></div>
+            </div>
+
+            {/* Text with glow */}
+            <p className="text-white text-lg font-medium animate-pulse">
+              Redirecting to your home...
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="w-full max-w-md bg-gray-800 p-8 rounded-lg shadow-md">
         <h1 className="text-3xl font-bold mb-8 text-center">
           {isLoginMode ? "Login" : "Signup"}
