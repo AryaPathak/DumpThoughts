@@ -5,6 +5,7 @@ import axios from "axios";
 import PostsList from "../posts/page";
 import Loader from "../components/Loader";
 import { useRouter } from "next/navigation";
+import { LogOut } from "lucide-react";
 
 interface HomePageProps {
   loggedInUser: number | null;
@@ -100,15 +101,18 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
 
       {user && (
         <>
+          
+
           <button
             onClick={() => {
               localStorage.removeItem("user_id");
               window.location.href = "/login";
             }}
-            className="text-white text-sm absolute top-0 right-0 m-4 px-4 py-2 bg-red-600 rounded-xl hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+            className="absolute top-0 right-0 m-4 p-2 bg-red-600 rounded-xl hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 text-white"
           >
-            Log out
+            <LogOut className="w-5 h-5" />
           </button>
+
 
           <button
             onClick={() => user && router.push(`/${user.username}`)}
