@@ -163,11 +163,13 @@ const PostsList: React.FC<PostsListProps> = ({ userId, refreshPosts, onUserClick
             <div className="flex items-center gap-6 mt-3 text-gray-400 text-sm">
               <button className="flex items-center gap-1 hover:text-red-400 transition">
                 <Heart size={18} />
-                <span>Like</span>
+                <span className="text-gray-400 text-sm ml-0">12</span>
               </button>
+
+              {/* Comment Button */}
               <button className="flex items-center gap-1 hover:text-blue-400 transition">
                 <MessageCircle size={18} />
-                <span>Comment</span>
+                <span className="text-gray-400 text-sm ml-0">3</span>
               </button>
             </div>
 
