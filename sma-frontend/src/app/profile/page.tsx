@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import PostsList from '../posts/page';
 import { UserCircle, Users, UserPlus } from 'lucide-react';
+import { ArrowLeft } from "lucide-react";
 
 
 interface User {
@@ -61,8 +62,6 @@ useEffect(() => {
       const res = await axios.get(`http://localhost:3000/api/v1/users/${userId}`);
       const fetchedUser = res.data;
       setUserData(fetchedUser);
-console.log("Fetched follower_ids:", fetchedUser.follower_ids);
-console.log("Fetched following_ids:", fetchedUser.following_ids);
 
       // Check following status immediately
       if (user && fetchedUser.follower_ids) {
@@ -94,9 +93,18 @@ console.log("Fetched following_ids:", fetchedUser.following_ids);
   };
 
   return (
+    
     <div className="relative text-white max-w-2xl mx-auto bg-black border-x border-gray-700 rounded-none overflow-hidden">
-     
-     
+      <button
+        onClick={() => {
+          window.location.href = "/home";
+        }}
+        className="absolute top-4 left-4 z-50 p-2 rounded-full bg-gray-800 hover:bg-gray-700 shadow-md"
+      title="Back"
+    >
+      <ArrowLeft size={20} />
+    </button>
+
 
       {isLoading ? (
         <p className="text-white text-center py-10">Loading user data...</p>
